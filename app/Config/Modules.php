@@ -24,7 +24,8 @@ class Modules extends BaseModules
      * @var bool
      */
     public $enabled = true;
-
+    public $helpers = ['wa', 'slug', 'seo'];
+    
     /**
      * --------------------------------------------------------------------------
      * Enable Auto-Discovery Within Composer Packages?

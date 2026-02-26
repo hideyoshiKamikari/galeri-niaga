@@ -24,11 +24,10 @@ class Auth extends BaseController
                       ->first();
 
         if ($user && password_verify($password, $user['password'])) {
-
             $session->set([
-                'user_id' => $user['id'],
-                'name'    => $user['name'],
-                'role'    => $user['role'],
+                'user_id'   => $user['id'],
+                'name'      => $user['name'],
+                'role'      => $user['role'],
                 'logged_in' => true
             ]);
 

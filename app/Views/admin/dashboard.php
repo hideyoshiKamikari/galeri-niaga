@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-</head>
-<body>
+<?= $this->extend('admin/layouts/base') ?>
 
-    <h1>Welcome <?= session()->get('name'); ?> 👋</h1>
+<?= $this->section('content') ?>
 
-    <p>Ini halaman admin dashboard.</p>
+<!-- Welcome Section -->
+<div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 mb-6 text-white">
+    <h2 class="text-2xl font-bold mb-2">Welcome back, <?= session()->get('name') ?>! 👋</h2>
+    <p class="opacity-90">Ini ringkasan aktivitas Galeri Niaga hari ini.</p>
+</div>
 
-    <form method="post" action="/logout">
-    <?= csrf_field(); ?>
-    <button type="submit">Logout</button>
-</form>
+<!-- ... sisanya tetap sama ... -->
 
-</body>
-</html>
+<?= $this->endSection() ?>
