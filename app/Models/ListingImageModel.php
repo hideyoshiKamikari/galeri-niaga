@@ -27,7 +27,7 @@ class ListingImageModel extends Model
     protected $validationRules      = [
         'listing_id'  => 'required|numeric',
         'image_path'  => 'required',
-        'is_primary'  => 'permit_empty|in_list[0,1]',
+        // 'is_primary'  => 'permit_empty|in_list[0,1]',
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;

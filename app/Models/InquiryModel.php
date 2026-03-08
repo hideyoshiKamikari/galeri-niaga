@@ -14,7 +14,7 @@ class InquiryModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'name', 'phone', 'email', 'listing_type', 
-        'message', 'listing_id', 'status'
+        'message', 'listing_id', 'status', 'photos' // <-- TAMBAH 'photos' DI SINI
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -33,6 +33,7 @@ class InquiryModel extends Model
         'listing_type' => 'required|in_list[product,property,service]',
         'message'      => 'required',
         'status'       => 'in_list[new,read,replied]',
+        // 'photos'     => 'permit_empty', // optional, gak perlu divalidasi
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;

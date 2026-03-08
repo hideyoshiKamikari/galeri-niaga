@@ -12,7 +12,7 @@ class CategoryController extends BaseController
     public function __construct()
     {
         $this->categoryModel = new CategoryModel();
-        helper(['slug', 'alert']); // Load helpers
+        helper(['slug', 'alert']);
     }
     
     public function index()
@@ -39,24 +39,42 @@ class CategoryController extends BaseController
     
     public function store()
     {
-        $rules = [
-            'name' => 'required|min_length[3]|max_length[100]'
-        ];
+        $name = trim($this->request->getPost('name'));
         
-        if (!$this->validate($rules)) {
+        // Manual validation
+        $errors = [];
+        
+        if (empty($name)) {
+            $errors['name'] = 'Nama kategori harus diisi';
+        } elseif (strlen($name) < 3) {
+            $errors['name'] = 'Nama kategori minimal 3 karakter';
+        } elseif (strlen($name) > 100) {
+            $errors['name'] = 'Nama kategori maksimal 100 karakter';
+        } else {
+            // Check unique (case insensitive)
+            $existing = $this->categoryModel
+                ->where('LOWER(name)', strtolower($name))
+                ->first();
+                
+            if ($existing) {
+                $errors['name'] = 'Nama kategori sudah ada';
+            }
+        }
+        
+        if (!empty($errors)) {
             return redirect()->back()
                 ->withInput()
-                ->with('errors', $this->validator->getErrors());
+                ->with('errors', $errors);
         }
         
         $data = [
-            'name' => $this->request->getPost('name'),
-            'slug' => generate_category_slug($this->request->getPost('name'))
+            'name' => $name,
+            'slug' => generate_category_slug($name)
         ];
         
         if ($this->categoryModel->save($data)) {
-            return redirect()->to('/admin/categories')
-                ->with('success', 'Kategori berhasil ditambahkan');
+            return redirect()->to(route_to('admin.categories'))
+                ->with('success', 'Kategori "' . $data['name'] . '" berhasil ditambahkan! 🎉');
         } else {
             return redirect()->back()
                 ->withInput()
@@ -69,7 +87,7 @@ class CategoryController extends BaseController
         $category = $this->categoryModel->find($id);
         
         if (!$category) {
-            return redirect()->to('/admin/categories')
+            return redirect()->to(route_to('admin.categories'))
                 ->with('error', 'Kategori tidak ditemukan');
         }
         
@@ -83,28 +101,50 @@ class CategoryController extends BaseController
     
     public function update($id)
     {
-        $rules = [
-            'name' => 'required|min_length[3]|max_length[100]'
-        ];
+        $category = $this->categoryModel->find($id);
+        if (!$category) {
+            return redirect()->to(route_to('admin.categories'))
+                ->with('error', 'Kategori tidak ditemukan');
+        }
         
-        if (!$this->validate($rules)) {
+        $name = trim($this->request->getPost('name'));
+        
+        // Manual validation
+        $errors = [];
+        
+        if (empty($name)) {
+            $errors['name'] = 'Nama kategori harus diisi';
+        } elseif (strlen($name) < 3) {
+            $errors['name'] = 'Nama kategori minimal 3 karakter';
+        } elseif (strlen($name) > 100) {
+            $errors['name'] = 'Nama kategori maksimal 100 karakter';
+        } else {
+            // Case insensitive check, exclude current ID
+            $existing = $this->categoryModel
+                ->where('LOWER(name)', strtolower($name))
+                ->where('id !=', $id)
+                ->first();
+                
+            if ($existing) {
+                $errors['name'] = 'Nama kategori sudah ada';
+            }
+        }
+        
+        if (!empty($errors)) {
             return redirect()->back()
                 ->withInput()
-                ->with('errors', $this->validator->getErrors());
+                ->with('errors', $errors);
         }
         
         $data = [
             'id' => $id,
-            'name' => $this->request->getPost('name'),
-            'slug' => generate_category_slug(
-                $this->request->getPost('name'), 
-                $id
-            )
+            'name' => $name,
+            'slug' => generate_category_slug($name, $id)
         ];
         
         if ($this->categoryModel->save($data)) {
-            return redirect()->to('/admin/categories')
-                ->with('success', 'Kategori berhasil diupdate');
+            return redirect()->to(route_to('admin.categories'))
+                ->with('success', 'Kategori "' . $data['name'] . '" berhasil diupdate! ✨');
         } else {
             return redirect()->back()
                 ->withInput()
@@ -117,21 +157,21 @@ class CategoryController extends BaseController
         $category = $this->categoryModel->find($id);
         
         if (!$category) {
-            return redirect()->to('/admin/categories')
+            return redirect()->to(route_to('admin.categories'))
                 ->with('error', 'Kategori tidak ditemukan');
         }
         
         // Cek apakah kategori punya listing
         if ($this->categoryModel->hasListings($id)) {
-            return redirect()->to('/admin/categories')
+            return redirect()->to(route_to('admin.categories'))
                 ->with('error', 'Kategori tidak bisa dihapus karena masih memiliki listing');
         }
         
         if ($this->categoryModel->delete($id)) {
-            return redirect()->to('/admin/categories')
+            return redirect()->to(route_to('admin.categories'))
                 ->with('success', 'Kategori berhasil dihapus');
         } else {
-            return redirect()->to('/admin/categories')
+            return redirect()->to(route_to('admin.categories'))
                 ->with('error', 'Gagal menghapus kategori');
         }
     }

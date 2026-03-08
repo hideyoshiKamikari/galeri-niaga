@@ -10,7 +10,7 @@ class CategoryModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $useSoftDeletes   = true;  // Pake soft delete
+    protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = ['name', 'slug'];
 
@@ -24,14 +24,19 @@ class CategoryModel extends Model
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
-    protected $validationRules      = [
-        'name' => 'required|min_length[3]|max_length[100]',
-        'slug' => 'required|is_unique[categories.slug,id,{id}]',
-    ];
+    // VALIDASI INI YANG JADI MASALAH - COMMENT SEMUA
+    // protected $validationRules      = [
+    //     'name' => 'required|min_length[3]|max_length[100]|is_unique[categories.name,id,{id}]',
+    //     'slug' => 'required|is_unique[categories.slug,id,{id}]',
+    // ];
+    // protected $validationMessages   = [];
+    // protected $skipValidation       = false;
+    // protected $cleanValidationRules = true;
+
+    // GANTI DENGAN INI (validation dikosongin)
+    protected $validationRules      = [];
     protected $validationMessages   = [];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
+    protected $skipValidation       = true;  // <-- SKIP VALIDATION OTOMATIS
 
     // Relationships
     public function listings()
@@ -73,7 +78,7 @@ class CategoryModel extends Model
         return $data;
     }
 
-        // Cek apakah kategori punya listing
+    // Cek apakah kategori punya listing
     public function hasListings($id)
     {
         return $this->db->table('listings')

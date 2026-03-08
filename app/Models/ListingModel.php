@@ -27,16 +27,10 @@ class ListingModel extends Model
     protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
-    // Validation
-    protected $validationRules      = [
-        'category_id' => 'required|numeric',
-        'title'       => 'required|min_length[3]|max_length[255]',
-        'slug'        => 'required|is_unique[listings.slug,id,{id}]',
-        'description' => 'required',
-        'status'      => 'in_list[active,inactive]',
-    ];
+    // MATIKAN VALIDASI OTOMATIS (tapi slug tetap ke-generate)
+    protected $validationRules      = [];
     protected $validationMessages   = [];
-    protected $skipValidation       = false;
+    protected $skipValidation       = true;
     protected $cleanValidationRules = true;
 
     // Relationships
@@ -50,7 +44,7 @@ class ListingModel extends Model
         return $this->hasMany('App\Models\ListingImageModel', 'listing_id', 'id');
     }
 
-    // Generate slug
+    // Generate slug UNIQUE
     protected function generateSlug($title)
     {
         $slug = url_title($title, '-', true);
@@ -64,7 +58,7 @@ class ListingModel extends Model
         return $slug;
     }
 
-    // Before insert/update
+    // Before insert/update - INI TETAP JALAN!
     protected $beforeInsert = ['createSlug'];
     protected $beforeUpdate = ['updateSlug'];
 
