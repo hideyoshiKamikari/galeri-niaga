@@ -31,9 +31,9 @@
                 </a>
             </div>
             
-            <!-- Search Bar - Desktop -->
+            <!-- Search Bar - Desktop (UPDATE INI) -->
             <div class="hidden md:block">
-                <form action="<?= base_url('/') ?>" method="GET" class="flex">
+                <form action="<?= base_url('/search') ?>" method="GET" class="flex">
                     <input type="text" 
                            name="q" 
                            placeholder="Cari listing..." 
@@ -57,9 +57,9 @@
             </div>
         </div>
         
-        <!-- Mobile Search (hidden by default) -->
+        <!-- Mobile Search (hidden by default) - UPDATE INI -->
         <div id="mobileSearch" class="hidden md:hidden py-3 border-t border-gray-100">
-            <form action="<?= base_url('/') ?>" method="GET" class="flex">
+            <form action="<?= base_url('/search') ?>" method="GET" class="flex">
                 <input type="text" 
                        name="q" 
                        placeholder="Cari listing..." 

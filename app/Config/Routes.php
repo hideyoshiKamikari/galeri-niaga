@@ -15,6 +15,8 @@ $routes->get('search', 'Home::search');
 $routes->get('titip-jual', 'Home::titipJual');
 $routes->post('titip-jual/store', 'Home::storeTitipJual');
 $routes->get('titip-jual/success', 'Home::titipJualSuccess');
+$routes->get('tentang', 'Home::tentang');     
+$routes->get('kontak', 'Home::kontak');        
 
 // ========== AUTH ROUTES ==========
 $routes->group('', function($routes) {

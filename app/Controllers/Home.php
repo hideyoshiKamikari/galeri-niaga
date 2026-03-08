@@ -163,7 +163,37 @@ class Home extends BaseController
     
     public function search()
     {
-        return redirect()->to('/?' . http_build_query($this->request->getGet()));
+        $keyword = $this->request->getGet('q');
+        $category = $this->request->getGet('category');
+        
+        $query = $this->listingModel
+                    ->select('listings.*, categories.name as category_name')
+                    ->join('categories', 'categories.id = listings.category_id')
+                    ->where('listings.status', 'active');
+        
+        // Filter berdasarkan keyword
+        if ($keyword) {
+            $query->groupStart()
+                ->like('listings.title', $keyword)
+                ->orLike('listings.description', $keyword)
+                ->orLike('listings.location', $keyword)
+                ->groupEnd();
+        }
+        
+        // Filter berdasarkan kategori
+        if ($category && is_numeric($category)) {
+            $query->where('listings.category_id', $category);
+        }
+        
+        $data = [
+            'title' => 'Hasil Pencarian',
+            'listings' => $query->paginate(12),
+            'pager' => $this->listingModel->pager,
+            'keyword' => $keyword,
+            'categories' => $this->categoryModel->findAll()
+        ];
+        
+        return view('frontend/search', $data);
     }
 
     public function titipJual()
@@ -313,5 +343,25 @@ class Home extends BaseController
         ];
         
         return view('frontend/titip-jual-success', $data);
+    }
+
+    public function tentang()
+    {
+        $data = [
+            'title' => 'Tentang Kami',
+            'description' => 'Platform UMKM untuk memasarkan produk, properti, dan jasa'
+        ];
+        
+        return view('frontend/tentang', $data);
+    }
+
+    public function kontak()
+    {
+        $data = [
+            'title' => 'Kontak Kami',
+            'description' => 'Hubungi kami untuk informasi lebih lanjut'
+        ];
+        
+        return view('frontend/kontak', $data);
     }
 }
